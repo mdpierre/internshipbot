@@ -21,6 +21,7 @@ engine = create_async_engine(
 )
 
 async_session = async_sessionmaker(engine, expire_on_commit=False)
+session_factory = async_session  # alias for background tasks outside FastAPI DI
 
 
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
