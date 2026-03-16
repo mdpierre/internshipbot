@@ -26,7 +26,7 @@ from app.services.jobs_service import scrape_one
 
 log = structlog.get_logger(__name__)
 
-WATCHER_CONFIG_PATH = Path("watcher.json")
+WATCHER_CONFIG_PATH = Path(__file__).parent.parent.parent / "watcher.json"
 
 
 @dataclass

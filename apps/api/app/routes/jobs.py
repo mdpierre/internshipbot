@@ -33,16 +33,18 @@ log = get_logger(__name__)
 @router.post("", status_code=207)
 async def create_jobs(
     body: JobBulkCreate,
-    db: AsyncSession = Depends(get_db),
 ) -> list[JobBulkResult]:
     """
-    Scrape URLs sequentially and return a 207 array.
-    Sequential (not concurrent) to safely share the injected AsyncSession.
-    For 1–50 URLs this is fast enough; HTTP latency dominates.
+    Scrape URLs sequentially, one DB session per URL, and return a 207 array.
+    Each URL gets its own session+transaction so a failure on URL N does not
+    roll back successfully stored results for URLs 1..N-1.
     """
+    from app.db.session import session_factory
     results = []
     for url in body.urls:
-        result = await scrape_one(str(url), "manual", db)
+        async with session_factory() as db:
+            async with db.begin():
+                result = await scrape_one(str(url), "manual", db)
         results.append(result)
     return results
 
