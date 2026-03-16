@@ -1,19 +1,20 @@
 """
-Pydantic schemas for the /jobs endpoints.
+Pydantic schemas for the /jobs and /watcher endpoints.
 
-These are the public contract — what the API accepts and returns.
-Kept separate from DB models so we can evolve storage without changing the API.
-
-ApiResponse is a generic wrapper that gives every endpoint a consistent shape:
-    {"data": <payload>, "error": <string|null>}
-The frontend can always check `error` first, then read `data`.
+JobBulkCreate  — request body for POST /jobs (1–50 URLs)
+JobBulkResult  — one entry in the 207 response array
+JobResponse    — serialized Job for GET responses
+StatsResponse  — response for GET /jobs/stats
+WatcherStatus  — response for GET /watcher/status
+WatcherConfig  — request body for PUT /watcher/config
+ApiResponse    — generic {data, error} envelope (unchanged)
 """
 
 from datetime import datetime
 from typing import Generic, TypeVar
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, HttpUrl
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl
 
 T = TypeVar("T")
 
@@ -23,8 +24,8 @@ class ApiResponse(BaseModel, Generic[T]):
     error: str | None = None
 
 
-class JobCreate(BaseModel):
-    url: HttpUrl
+class JobBulkCreate(BaseModel):
+    urls: list[HttpUrl] = Field(min_length=1, max_length=50)
 
 
 class JobResponse(BaseModel):
@@ -33,8 +34,43 @@ class JobResponse(BaseModel):
     id: UUID
     url: str
     source: str
+    source_type: str
     extracted_text: str | None
     parsed_json: dict | None
     status: str
     created_at: datetime
     updated_at: datetime
+
+
+class JobBulkResult(BaseModel):
+    url: str
+    success: bool
+    job: JobResponse | None = None
+    skipped: bool = False
+    error: str | None = None
+
+
+class StatsResponse(BaseModel):
+    total: int
+    greenhouse: int
+    lever: int
+    unknown: int
+
+
+class SyncProgress(BaseModel):
+    current: int
+    total: int
+
+
+class WatcherStatus(BaseModel):
+    enabled: bool
+    path: str | None
+    state: str  # "idle" | "syncing"
+    last_synced_at: datetime | None
+    urls_found: int
+    sync_progress: SyncProgress
+    new_job_ids: list[str]
+
+
+class WatcherConfig(BaseModel):
+    path: str

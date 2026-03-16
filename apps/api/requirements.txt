@@ -12,3 +12,5 @@ beautifulsoup4>=4.12,<5
 lxml>=5.3,<6
 
 structlog>=24.4,<26
+watchfiles>=0.21,<1
+python-multipart>=0.0.9,<1

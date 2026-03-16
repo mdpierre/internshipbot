@@ -31,6 +31,9 @@ class Job(Base):
     )
     url: Mapped[str] = mapped_column(String(2048), nullable=False)
     source: Mapped[str] = mapped_column(String(64), nullable=False, default="unknown")
+    source_type: Mapped[str] = mapped_column(
+        String(16), nullable=False, default="manual", server_default="manual"
+    )
     raw_html: Mapped[str | None] = mapped_column(Text, nullable=True)
     extracted_text: Mapped[str | None] = mapped_column(Text, nullable=True)
     parsed_json: Mapped[dict | None] = mapped_column(JSONB, nullable=True)
