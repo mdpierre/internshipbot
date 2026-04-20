@@ -1,0 +1,48 @@
+# Environment & secrets
+.env
+apps/api/.env
+.env.local
+.env.*.local
+
+# Local PII — resumes, autofill profiles, credentials
+profiles/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+*.egg
+apps/api/.venv_runtime/
+apps/api/applybot.db
+
+# Alembic compiled migrations
+alembic/versions/__pycache__/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.claude/
+.superpowers/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+*.log
+
+# Git worktrees
+.worktrees/
+.git_broken_backup_*/

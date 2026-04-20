@@ -1,0 +1,12 @@
+# ── Database ──────────────────────────────────────────────
+DATABASE_URL=postgresql+asyncpg://applybot:applybot@localhost:5432/applybot
+
+# ── Redis (used for future job queue) ────────────────────
+REDIS_URL=redis://localhost:6379/0
+
+# ── App ──────────────────────────────────────────────────
+ENVIRONMENT=development
+LOG_LEVEL=debug
+
+# ── LLM (future — for structured parsing) ───────────────
+# OPENAI_API_KEY=sk-...
