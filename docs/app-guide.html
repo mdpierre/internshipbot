@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>applybot — App Guide</title>
+  <style>
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #1c2128;
+      --border: #30363d;
+      --accent: #58a6ff;
+      --accent2: #3fb950;
+      --warn: #f0883e;
+      --muted: #8b949e;
+      --text: #e6edf3;
+      --code-bg: #0d1117;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 15px;
+      line-height: 1.7;
+    }
+
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── Layout ────────────────────────────────────────────────────────── */
+    .page {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: 100vh;
+    }
+
+    nav {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      background: var(--surface);
+      border-right: 1px solid var(--border);
+      padding: 2rem 1.25rem;
+    }
+
+    nav .logo {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      display: block;
+    }
+
+    nav ul { list-style: none; }
+    nav li { margin-bottom: 0.25rem; }
+
+    nav a {
+      display: block;
+      padding: 0.3rem 0.6rem;
+      border-radius: 6px;
+      color: var(--muted);
+      font-size: 0.875rem;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    nav a:hover, nav a.active {
+      background: var(--surface2);
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    nav .section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      margin: 1.25rem 0.6rem 0.4rem;
+    }
+
+    main {
+      max-width: 860px;
+      padding: 3rem 2.5rem;
+    }
+
+    /* ── Typography ─────────────────────────────────────────────────────── */
+    h1 { font-size: 2rem; font-weight: 700; margin-bottom: 0.5rem; }
+    h2 { font-size: 1.4rem; font-weight: 600; margin: 2.5rem 0 0.75rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+    h3 { font-size: 1.05rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--accent); }
+
+    p { margin-bottom: 1rem; }
+
+    ul, ol { padding-left: 1.5rem; margin-bottom: 1rem; }
+    li { margin-bottom: 0.3rem; }
+
+    /* ── Hero ────────────────────────────────────────────────────────────── */
+    .hero {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .hero .tagline {
+      color: var(--muted);
+      font-size: 1.05rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0;
+    }
+
+    .badge-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-top: 1.25rem;
+    }
+
+    .badge {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 0.2rem 0.75rem;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    /* ── Steps ───────────────────────────────────────────────────────────── */
+    .steps { counter-reset: step; list-style: none; padding: 0; }
+
+    .steps li {
+      counter-increment: step;
+      display: grid;
+      grid-template-columns: 2rem 1fr;
+      gap: 0.75rem;
+      margin-bottom: 1.25rem;
+      align-items: start;
+    }
+
+    .steps li::before {
+      content: counter(step);
+      background: var(--accent);
+      color: #0d1117;
+      border-radius: 50%;
+      width: 1.75rem;
+      height: 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      flex-shrink: 0;
+      margin-top: 0.1rem;
+    }
+
+    /* ── Code ────────────────────────────────────────────────────────────── */
+    code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0.1em 0.4em;
+      font-size: 0.85em;
+      font-family: "SF Mono", "Fira Code", Consolas, monospace;
+      color: #79c0ff;
+    }
+
+    pre {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      margin-bottom: 1.25rem;
+    }
+
+    pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.85rem;
+      color: var(--text);
+    }
+
+    .comment { color: var(--muted); }
+    .cmd { color: var(--accent2); }
+
+    /* ── Cards ───────────────────────────────────────────────────────────── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+
+    .card .icon { font-size: 1.4rem; margin-bottom: 0.5rem; }
+    .card h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 0.3rem; }
+    .card p { font-size: 0.82rem; color: var(--muted); margin: 0; }
+
+    /* ── Route table ─────────────────────────────────────────────────────── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 1.5rem;
+      font-size: 0.875rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border-bottom: 2px solid var(--border);
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    td {
+      padding: 0.5rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    .method {
+      font-family: "SF Mono", Consolas, monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.15em 0.5em;
+      border-radius: 4px;
+    }
+
+    .get  { background: #1b4332; color: #3fb950; }
+    .post { background: #1a3a5c; color: #58a6ff; }
+    .put  { background: #3d2a04; color: #f0883e; }
+
+    /* ── Alert ───────────────────────────────────────────────────────────── */
+    .alert {
+      border-left: 3px solid var(--warn);
+      background: #1c1a14;
+      border-radius: 0 6px 6px 0;
+      padding: 0.75rem 1rem;
+      margin-bottom: 1.25rem;
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    .alert strong { color: var(--warn); }
+
+    /* ── Next steps ──────────────────────────────────────────────────────── */
+    .roadmap { list-style: none; padding: 0; }
+
+    .roadmap li {
+      display: flex;
+      gap: 0.75rem;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border);
+      align-items: flex-start;
+    }
+
+    .roadmap li:last-child { border-bottom: none; }
+
+    .roadmap .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+      margin-top: 0.4rem;
+    }
+
+    .dot-blue   { background: var(--accent); }
+    .dot-green  { background: var(--accent2); }
+    .dot-orange { background: var(--warn); }
+    .dot-muted  { background: var(--muted); }
+
+    .roadmap .label { font-weight: 600; font-size: 0.9rem; }
+    .roadmap .desc  { font-size: 0.82rem; color: var(--muted); }
+
+    /* ── Responsive ──────────────────────────────────────────────────────── */
+    @media (max-width: 700px) {
+      .page { grid-template-columns: 1fr; }
+      nav { position: static; height: auto; }
+      main { padding: 2rem 1.25rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ── Sidebar nav ──────────────────────────────────────────────────── -->
+  <nav>
+    <span class="logo">applybot</span>
+
+    <div class="section-label">Overview</div>
+    <ul>
+      <li><a href="#what-is-it">What is it?</a></li>
+      <li><a href="#architecture">Architecture</a></li>
+    </ul>
+
+    <div class="section-label">Getting Started</div>
+    <ul>
+      <li><a href="#prerequisites">Prerequisites</a></li>
+      <li><a href="#quick-start">Quick start</a></li>
+    </ul>
+
+    <div class="section-label">Using the App</div>
+    <ul>
+      <li><a href="#workflow">Core workflow</a></li>
+      <li><a href="#profiles">Managing profiles</a></li>
+      <li><a href="#jobs">Adding jobs</a></li>
+      <li><a href="#sessions">Application sessions</a></li>
+      <li><a href="#extension">Browser extension</a></li>
+    </ul>
+
+    <div class="section-label">Reference</div>
+    <ul>
+      <li><a href="#api">API routes</a></li>
+      <li><a href="#next-steps">Next steps</a></li>
+    </ul>
+  </nav>
+
+  <!-- ── Main content ─────────────────────────────────────────────────── -->
+  <main>
+
+    <!-- Hero -->
+    <div class="hero">
+      <h1>applybot</h1>
+      <p class="tagline">A local-first job application assistant — scrape, manage, autofill, and track without leaving your machine.</p>
+      <div class="badge-row">
+        <span class="badge">FastAPI backend</span>
+        <span class="badge">Next.js dashboard</span>
+        <span class="badge">Electron desktop shell</span>
+        <span class="badge">Chrome extension</span>
+        <span class="badge">Local-first &amp; private</span>
+      </div>
+    </div>
+
+    <!-- ── What is it? ─────────────────────────────────────────────────── -->
+    <section id="what-is-it">
+      <h2>What is it?</h2>
+      <p>
+        applybot turns job-posting URLs into a structured, reviewable pipeline.
+        You paste a URL, the backend scrapes and normalizes the listing, you pick
+        which of your three saved profiles should apply, and a companion browser
+        extension autofills the live form — all while the dashboard tracks every
+        session and event.
+      </p>
+      <p>
+        Everything runs on your own machine. No cloud account is required, no
+        resume or personal data ever leaves localhost unless you push it yourself.
+      </p>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="icon">&#x1F4CB;</div>
+          <h4>Job ingestion</h4>
+          <p>Paste one or many URLs. The API scrapes HTML, detects the ATS (Greenhouse, Lever, or unknown), and stores structured data.</p>
+        </div>
+        <div class="card">
+          <div class="icon">&#x1F464;</div>
+          <h4>Profile slots</h4>
+          <p>Three named slots (<code>profile_1</code> – <code>profile_3</code>) hold your contact info, work history, education, and parsed resume.</p>
+        </div>
+        <div class="card">
+          <div class="icon">&#x1F4CE;</div>
+          <h4>Resume parsing</h4>
+          <p>Upload a PDF resume into any slot. The backend extracts structured fields automatically.</p>
+        </div>
+        <div class="card">
+          <div class="icon">&#x1F9E9;</div>
+          <h4>Extension autofill</h4>
+          <p>The Chrome extension fetches the active profile payload and fills the live application form field-by-field.</p>
+        </div>
+        <div class="card">
+          <div class="icon">&#x1F4CA;</div>
+          <h4>Session tracking</h4>
+          <p>Every autofill attempt is logged as an <em>ApplicationSession</em> with timestamped events and a final result.</p>
+        </div>
+        <div class="card">
+          <div class="icon">&#x1F5A5;&#xFE0F;</div>
+          <h4>Dashboard</h4>
+          <p>A dark control-room UI shows job intake metrics, profile state, extension readiness, and full session history.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Architecture ────────────────────────────────────────────────── -->
+    <section id="architecture">
+      <h2>Architecture</h2>
+      <p>Four loosely coupled layers communicate over HTTP:</p>
+      <ul>
+        <li><strong>FastAPI backend</strong> (<code>apps/api/</code>) — the single source of truth. Handles scraping, profile storage, session lifecycle, and the extension config endpoint. Uses SQLAlchemy + Alembic on Postgres.</li>
+        <li><strong>Next.js dashboard</strong> (<code>apps/web/</code>) — Pages-Router UI that proxies <code>/api/*</code> to the local backend at port 8000. Provides the job console, profile editor, and session viewer.</li>
+        <li><strong>Electron shell</strong> (<code>apps/desktop/</code>) — optional packaging layer that opens the dashboard in a desktop window. Business logic lives in the API, not Electron.</li>
+        <li><strong>Chrome extension</strong> — browser-side worker. Reads <code>GET /extension/config</code> to discover which profile is active, creates sessions, fills forms, and posts events back.</li>
+      </ul>
+    </section>
+
+    <!-- ── Prerequisites ──────────────────────────────────────────────── -->
+    <section id="prerequisites">
+      <h2>Prerequisites</h2>
+      <ul>
+        <li>Docker (for Postgres)</li>
+        <li>Python 3.12+</li>
+        <li>Node 18+</li>
+        <li>Chrome (for the extension)</li>
+      </ul>
+    </section>
+
+    <!-- ── Quick start ────────────────────────────────────────────────── -->
+    <section id="quick-start">
+      <h2>Quick start</h2>
+
+      <h3>1 — Start infrastructure</h3>
+      <pre><code><span class="comment"># From the repo root</span>
+<span class="cmd">docker compose up -d</span></code></pre>
+
+      <h3>2 — Run the API</h3>
+      <pre><code><span class="cmd">cd apps/api</span>
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+alembic upgrade head
+uvicorn app.main:app --reload --port 8000</code></pre>
+      <p>The API seeds the three profile slots automatically on first run. Verify with <code>GET http://localhost:8000/health</code>.</p>
+
+      <h3>3 — Run the dashboard</h3>
+      <pre><code><span class="cmd">cd apps/web</span>
+npm install
+npm run dev</code></pre>
+      <p>Open <a href="http://localhost:3000">http://localhost:3000</a>. The dashboard proxies <code>/api/*</code> to the local API.</p>
+
+      <h3>4 — (Optional) Run the desktop shell</h3>
+      <pre><code><span class="cmd">cd apps/desktop</span>
+npm install
+npm run dev</code></pre>
+
+      <h3>5 — Load the extension</h3>
+      <ol>
+        <li>Open <code>chrome://extensions</code></li>
+        <li>Enable <strong>Developer mode</strong></li>
+        <li>Click <strong>Load unpacked</strong> and select the extension source folder</li>
+        <li>The extension will call <code>GET /extension/config</code> to bootstrap</li>
+      </ol>
+    </section>
+
+    <!-- ── Core workflow ──────────────────────────────────────────────── -->
+    <section id="workflow">
+      <h2>Core workflow</h2>
+      <ol class="steps">
+        <li>
+          <div>
+            <strong>Set up a profile</strong><br />
+            Go to <code>/profiles</code> in the dashboard. Pick one of the three slots, fill in your contact info, work history, and education — or upload a PDF resume and let the parser pre-fill the fields.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Activate a profile slot</strong><br />
+            Mark one slot as active. The extension always reads whichever slot is currently active via <code>/extension/config</code>.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Ingest a job</strong><br />
+            Paste the job posting URL into the dashboard console on <code>/jobs</code>. The backend fetches the page, normalises the data, and stores it.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Open the job posting in Chrome</strong><br />
+            Navigate to the actual application form. The extension detects the page and shows its action button.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Trigger autofill</strong><br />
+            Click the extension button. It creates an <em>ApplicationSession</em> on the backend, retrieves the profile payload, and fills each form field. Fill events are logged as they happen.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Review and submit manually</strong><br />
+            Inspect the pre-filled form, correct anything the parser missed, and click <em>Submit</em> yourself. The extension records the final result.
+          </div>
+        </li>
+        <li>
+          <div>
+            <strong>Review in the dashboard</strong><br />
+            Check <code>/sessions</code> for the full event log and outcome of each application attempt.
+          </div>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ── Profiles ───────────────────────────────────────────────────── -->
+    <section id="profiles">
+      <h2>Managing profiles</h2>
+      <p>
+        There are exactly three profile slots: <code>profile_1</code>, <code>profile_2</code>,
+        <code>profile_3</code>. These are intentional — one for each identity or resume variant
+        you might want (e.g., engineering, product, research).
+      </p>
+      <p>Each slot holds:</p>
+      <ul>
+        <li>Display name and contact details (email, phone, location, LinkedIn, GitHub)</li>
+        <li>Work experience entries</li>
+        <li>Education entries</li>
+        <li>An uploaded PDF resume (stored locally, never committed)</li>
+        <li>Parsed resume fields that can pre-populate the profile</li>
+      </ul>
+
+      <div class="alert">
+        <strong>Privacy:</strong> All resume files and profile data live under <code>profiles/</code>
+        which is gitignored. Nothing under that directory is ever committed.
+      </div>
+
+      <h3>Uploading a resume</h3>
+      <p>
+        Use the <strong>Upload Resume</strong> action on the profile page (or <code>POST /profiles/{slot}/resume</code>).
+        After uploading, trigger <strong>Parse Resume</strong> (<code>POST /profiles/{slot}/parse-resume</code>)
+        to extract structured fields automatically. You can then review and save the parsed data.
+      </p>
+    </section>
+
+    <!-- ── Jobs ──────────────────────────────────────────────────────── -->
+    <section id="jobs">
+      <h2>Adding jobs</h2>
+      <p>
+        Paste one or more job posting URLs into the ingestion console on the <code>/jobs</code>
+        dashboard page. The API:
+      </p>
+      <ol>
+        <li>Fetches the raw HTML for each URL</li>
+        <li>Detects whether the ATS is Greenhouse, Lever, or unknown</li>
+        <li>Normalises the posting into a structured <code>Job</code> record (title, company, description, ATS type)</li>
+        <li>Stores the record in Postgres</li>
+      </ol>
+      <p>
+        You can also sync markdown job sources via the <code>/watcher</code> endpoint for
+        file-based workflows.
+      </p>
+    </section>
+
+    <!-- ── Sessions ──────────────────────────────────────────────────── -->
+    <section id="sessions">
+      <h2>Application sessions</h2>
+      <p>
+        An <em>ApplicationSession</em> is created when the extension begins filling a form.
+        The lifecycle is:
+      </p>
+      <ol>
+        <li>Extension calls <code>POST /application-sessions</code> (links job + active profile slot)</li>
+        <li>Extension calls <code>GET /application-sessions/{id}/payload</code> to get flattened fill data</li>
+        <li>Extension calls <code>POST /application-sessions/{id}/events</code> for each field it fills</li>
+        <li>Extension calls <code>POST /application-sessions/{id}/result</code> with the final outcome</li>
+      </ol>
+      <p>
+        The dashboard <code>/sessions</code> page shows all sessions, their statuses, and the
+        complete event timeline for each one.
+      </p>
+    </section>
+
+    <!-- ── Extension ─────────────────────────────────────────────────── -->
+    <section id="extension">
+      <h2>Browser extension</h2>
+      <p>
+        The Chrome extension is the browser-side autofill worker. It communicates
+        exclusively with the local API — there is no remote server involved.
+      </p>
+      <p>Key behaviours:</p>
+      <ul>
+        <li>On install / popup open, fetches <code>GET /extension/config</code> to learn the active profile slot and dashboard URL.</li>
+        <li>Only fills forms when triggered manually — no background auto-submit.</li>
+        <li>Reports field-level events so you can see exactly what was filled and what was skipped.</li>
+        <li>Final submission is always performed by the user, not the extension.</li>
+      </ul>
+
+      <div class="alert">
+        <strong>Terms of service:</strong> Automated form filling may conflict with some
+        job platform terms. Use responsibly and review each application before submitting.
+      </div>
+    </section>
+
+    <!-- ── API reference ─────────────────────────────────────────────── -->
+    <section id="api">
+      <h2>API routes</h2>
+      <p>All routes are served at <code>http://localhost:8000</code>. The dashboard proxies them via <code>/api/*</code>.</p>
+
+      <h3>Health &amp; config</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method get">GET</span></td><td><code>/health</code></td><td>API liveness check</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/extension/config</code></td><td>Active slot + API base URL for the extension</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Jobs</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method post">POST</span></td><td><code>/jobs</code></td><td>Bulk ingest job URLs</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/jobs</code></td><td>List recent jobs (paginated)</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/jobs/stats</code></td><td>Total count by ATS type</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/jobs/{job_id}</code></td><td>Single job detail</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Profiles</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method get">GET</span></td><td><code>/profiles</code></td><td>List all three slots</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/profiles/{slot}</code></td><td>Get a single profile slot</td></tr>
+          <tr><td><span class="method put">PUT</span></td><td><code>/profiles/{slot}</code></td><td>Update profile fields</td></tr>
+          <tr><td><span class="method put">PUT</span></td><td><code>/profiles/active/{slot}</code></td><td>Activate a profile slot</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/profiles/{slot}/resume</code></td><td>Upload PDF resume</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/profiles/{slot}/parse-resume</code></td><td>Parse uploaded resume into fields</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Application sessions</h3>
+      <table>
+        <thead><tr><th>Method</th><th>Path</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><span class="method post">POST</span></td><td><code>/application-sessions</code></td><td>Create a new session</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/application-sessions</code></td><td>List all sessions</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/application-sessions/{id}</code></td><td>Session detail with events</td></tr>
+          <tr><td><span class="method get">GET</span></td><td><code>/application-sessions/{id}/payload</code></td><td>Flattened fill payload for the extension</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/application-sessions/{id}/events</code></td><td>Record fill events</td></tr>
+          <tr><td><span class="method post">POST</span></td><td><code>/application-sessions/{id}/result</code></td><td>Mark session complete / failed</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- ── Next steps ─────────────────────────────────────────────────── -->
+    <section id="next-steps">
+      <h2>Next steps</h2>
+      <p>The current v1 is intentionally minimal. Below are the most natural directions to extend the project.</p>
+
+      <ul class="roadmap">
+        <li>
+          <span class="dot dot-green"></span>
+          <div>
+            <div class="label">Improve resume parsing accuracy</div>
+            <div class="desc">The current parser does basic PDF text extraction. Integrating an LLM or a dedicated parsing library (e.g., pyresparser, Affinda) would yield much higher-quality structured output for experience and education fields.</div>
+          </div>
+        </li>
+        <li>
+          <span class="dot dot-green"></span>
+          <div>
+            <div class="label">Expand ATS coverage</div>
+            <div class="desc">Only Greenhouse and Lever are currently detected. Adding Workday, Taleo, iCIMS, and BambooHR scrapers would significantly increase the range of supported job postings.</div>
+          </div>
+        </li>
+        <li>
+          <span class="dot dot-blue"></span>
+          <div>
+            <div class="label">Cover letter generation</div>
+            <div class="desc">Add a <code>POST /jobs/{id}/cover-letter</code> route that takes the active profile and job description and generates a draft via an LLM. Store the draft alongside the job record.</div>
+          </div>
+        </li>
+        <li>
+          <span class="dot dot-blue"></span>
+          <div>
+            <div class="label">Job matching / scoring</div>
+            <div class="desc">Embed job descriptions and profile summaries and compute similarity scores so the dashboard can rank which jobs best fit each profile slot.</div>
+          </div>
+        </li>
+        <li>
+          <span class="dot dot-blue"></span>
+          <div>
+            <div class="label">Markdown job source watcher</div>
+            <div class="desc">The <code>/watcher</code> endpoint stub exists. Wiring it to a file-system watcher that automatically ingests URLs from a local markdown file would enable a Obsidian / plain-text workflow.</div>
+          </div>
+        </li>
+        <li>
+          <span class="dot dot-orange"></span>
+          <div>
+            <div class="label">Extension field-mapping editor</div>
+            <div class="desc">Let users correct which profile field maps to which form selector. Corrections could be persisted and re-used on the same ATS in future sessions, improving fill accuracy over time.</div>
+          </div>
+        </li>
+        <li>
+          <span class="dot dot-orange"></span>
+          <div>
+            <div class="label">Session analytics dashboard</div>
+            <div class="desc">Build a dedicated analytics view: fill rate by ATS, most-missed fields, time-to-complete, and submission success rate. This would identify patterns across many applications.</div>
+          </div>
+        </li>
+        <li>
+          <span class="dot dot-muted"></span>
+          <div>
+            <div class="label">Optional cloud sync (later)</div>
+            <div class="desc">For users who want their data accessible from multiple machines, an optional encrypted sync layer (e.g., self-hosted S3, Supabase with RLS) could be layered on top without changing the local-first core.</div>
+          </div>
+        </li>
+      </ul>
+
+      <p style="margin-top:1.5rem; color: var(--muted); font-size: 0.875rem;">
+        Items in <span style="color:var(--accent2)">green</span> are low-effort quality improvements.
+        <span style="color:var(--accent)">Blue</span> items add net-new capabilities.
+        <span style="color:var(--warn)">Orange</span> items improve the feedback loop over time.
+        <span style="color:var(--muted)">Grey</span> items are intentionally deferred.
+      </p>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>
